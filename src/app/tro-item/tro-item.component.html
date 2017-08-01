@@ -1,0 +1,35 @@
+<div class="callout">
+  <p class="user-profile-link"> 
+    <small href="#">
+      <img aria-hidden=true [src]="feed?.from?.picture?.data?.url" class="avatar"/>
+      <span style="vertical-align: top; line-height: 25px; color: #3f51b5; font-weight: bold;">{{feed?.from.name}} - {{feed?.created_time | amTimeAgo:true}}</span>
+    </small>
+  </p>
+  <div class="pin-image" (click)="viewDetail()">
+    <div class="pin-url-wrapper">
+      <a [href]="feed?.link" class="pin-url" target="_blank">
+        <strong>
+          <!-- {{feed?.created_time}} -->
+           {{feed?.created_time | amCalendar}} 
+        </strong>
+      </a>
+    </div>
+    <img class="pin-image-img" [src]="feed?.picture" alt="">
+  </div>
+  <p style="margin:0px;">
+    <small class="pin-desc">
+      <b>Địa chỉ :</b><button *ngIf="feed.showMap" md-menu-item style='display: inline-block;width: 25px; margin: 0px !important; padding: 0px !important; height: 25px; line-height: 10px; border-radius: 5px;' (click) = "viewMap()"><md-icon style="margin-left: 0px; margin-top: -10px !important; position: absolute; color:red;font:bold;margin-right:0px;">place</md-icon></button> <b style="color:#009688;">{{feed?.address}}</b>
+    </small>
+    <small class="pin-desc">
+      <br><b>Điện thoại:</b> <b style="color:#009688;">{{feed.phone}}</b>
+    </small>
+    <small class="pin-desc">
+      <br><b>Giá:</b> <b *ngIf="feed.showPrice" style="color:#009688;">{{feed.price | currency: 'VND'}}</b><b *ngIf="!feed.showPrice" style="color:#009688;">Không rõ</b>
+    </small>
+  </p>
+  <p>
+    <small class="pin-desc">
+      {{feed.message}}
+    </small>
+  </p>
+</div>

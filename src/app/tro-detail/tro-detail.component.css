@@ -1,0 +1,24 @@
+
+.pin-image img{
+  border-radius: 10px;
+  width: 100%;
+}
+
+.pin-image{
+  position: relative;
+}
+
+.avatar{
+  width: 1.5rem;
+  border-radius: 99px;
+}
+
+.fb_iframe_widget {
+    display: inline-block;
+    position: relative;
+}
+
+.mat-dialog-container{
+  padding: 24px !important;
+  /* padding-right: 24px !important; */
+}

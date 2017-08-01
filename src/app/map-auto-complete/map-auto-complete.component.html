@@ -1,0 +1,15 @@
+<button md-button (click)="saveAddress()" color="warn" style='position: absolute; z-index: 2; background: rgba(255, 255, 255, 0.8); left: calc(50% - 44px); border-radius: 5px;'>Lưu</button>
+<button md-button md-dialog-close color="warn" style='position: absolute; z-index: 2; background: rgba(255, 255, 255, 0.8); float:right; border-radius: 5px;'>Đóng</button>
+<md-dialog-content style='padding: 0px !important; margin: 0px !important;'>
+  <div class="container">
+    <span class="input input--hoshi">
+        <input [(ngModel)]="address" class="input__field input__field--hoshi" type="text" id="input-4" autocorrect="off" autocapitalize="off" spellcheck="off" #search [formControl]="searchControl">
+        <label class="input__label input__label--hoshi input__label--hoshi-color-1" for="input-4">
+          <span class="input__label-content input__label-content--hoshi"></span>
+        </label>
+    </span>
+    <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom">
+      <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+    </agm-map>
+  </div>
+</md-dialog-content>

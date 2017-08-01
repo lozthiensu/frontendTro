@@ -1,0 +1,13 @@
+<div style="width: 75vw; max-width: none;">
+  <button md-button md-dialog-close md-dialog-close color="warn" style='position: absolute; z-index: 1; background: rgba(255, 255, 255, 0.8);'>Đóng</button>
+  <md-dialog-content style='padding: 0px !important; padding-bottom: 0px !important;'>
+    <agm-map [latitude]="map.location.lat" [zoom]="14" [longitude]="map.location.lng">
+        <agm-marker [latitude]="map.location.lat" [longitude]="map.location.lng">
+          <agm-info-window>
+            <strong>Địa chỉ: {{map.formatted_address}}</strong>
+          </agm-info-window>
+        </agm-marker>
+    </agm-map>
+
+  </md-dialog-content>
+</div>

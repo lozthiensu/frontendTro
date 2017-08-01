@@ -1,1 +1,69 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; 
+@import "assets/css/font-awesome.min.css";
+@import "assets/css/bootstrap-grid.min.css";
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #e9ebee;
+	font-family: Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #0a0a0a;
+	-webkit-font-smoothing: antialiased;
+}
+.is-reveal-open header {
+  -webkit-filter: blur(5px);
+  /* Safari */
+  filter: blur(5px);
+}
+.is-reveal-open .main {
+  -webkit-filter: blur(5px);
+  /* Safari */
+  filter: blur(5px);
+}
+
+.reveal {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+tag-input .ng2-tag-input {
+  background: rgba(161, 157, 154, 0.05) !important;
+  border-radius: 9px !important;
+  border: none !important;
+}
+tag-input .default.ng2-tag-input--focused {
+  border-bottom: none !important;
+}
+tag-input input {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 10rem;
+}
+tag-input input:focus {
+  border: none !important;
+}
+
+.pinTags {
+  border: 1px solid #ccc;
+}
+.pinTags .ng2-tag-input {
+  background: white !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: inset 1px 1px 4px #ddd;
+}
+
+.mat-dialog-container{
+  padding: 0px !important;
+  margin: 0px !important;
+  /* padding-right: 24px !important; */
+}
+.mat-toolbar {
+    min-height: 50px !important;
+    max-height: 50px !important;
+}
+.mat-toolbar-row {
+    height: 100% !important;
+}

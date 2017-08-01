@@ -1,0 +1,27 @@
+<div class="dashboard-grid large-12 columns" *ngIf="!feeds.length">
+  <div class="brick" *ngFor="let item of createRange(15)">
+    <div class="timeline-wrapper">
+      <div class="timeline-item">
+        <div class="animated-background">
+          <div class="background-masker image"></div>
+          <div class="background-masker header-bottom"></div>
+          <div class="background-masker paragraph1-bottom"></div>
+          <div class="background-masker paragraph2-bottom"></div>
+          <div class="background-masker paragraph3-bottom"></div>
+          <div class="background-masker paragraph4-bottom"></div>
+          <div class="background-masker paragraph5-bottom"></div>
+          <div class="background-masker paragraph6-bottom"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="dashboard-grid large-12 columns">
+  <div id="container">
+    <div class="row" infinite-scroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12" *ngFor="let feed of feeds">
+        <app-tro-item [feed]="feed" (viewDetailClicked)="openDetail($event)" (viewMapClicked)="openMap($event)"></app-tro-item>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<button md-button md-dialog-close md-dialog-close color="warn" style='position: absolute; z-index: 1; background: rgba(255, 255, 255, 0.8); left: calc(50% - 44px); border-radius: 5px;'>Đóng</button>
+<md-dialog-content style='min-width: 60vw; max-width:60vw; min-height: 50vh; max-height:50vh;padding: 0px !important; margin: 24px !important; padding-top: 24px !important;'>
+  Địa chỉ: <b style="color:#009688;">{{userMongo?.address}}</b><button md-button color="warn" style='margin-top: -5px; position: absolute; z-index: 1; background: rgba(255, 255, 255, 0.8); border-radius: 5px;' (click)="changeAddress()">Thay đổi</button>
+  <br><br>Giá: 
+  <br>
+  <md-radio-group class="example-radio-group" [(ngModel)]="userMongo.price">
+    <md-radio-button class="example-radio-button" [value]="0" (click)="setPrice(0)">
+     <b style="color:#009688;">&lt; 1000k</b>
+    </md-radio-button>
+    <br>
+    <md-radio-button class="example-radio-button" [value]="1" (click)="setPrice(1)" >
+      <b style="color:#009688;">1000k -> 2000k</b>
+    </md-radio-button>
+    <br>
+    <md-radio-button class="example-radio-button" [value]="2" (click)="setPrice(2)">
+      <b style="color:#009688;">2000k -> 5000k</b>
+    </md-radio-button>
+    <br>
+    <md-radio-button class="example-radio-button" [value]="3" (click)="setPrice(3)">
+      <b style="color:#009688;">&gt; 5000k</b>
+    </md-radio-button>
+  </md-radio-group>
+</md-dialog-content>

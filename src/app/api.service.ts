@@ -27,6 +27,15 @@ export class ApiService {
       .then(res => res.json() as any)
       .catch(this.handleError);
   }
+
+  setTypeNotification(param: any): Promise<any> {
+    return this.http
+      .post(this.baseUrl + 'setTypeNotification', JSON.stringify(param), { headers: this.headers })
+      .toPromise()
+      .then(res => res.json() as any)
+      .catch(this.handleError);
+  }
+
   setAddress(param: any): Promise<any> {
     return this.http
       .post(this.baseUrl + 'setAddress', JSON.stringify(param), { headers: this.headers })

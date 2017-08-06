@@ -1,7 +1,7 @@
 <md-toolbar color="warn">
     <img src='assets/image/logo.png' style='width: 45px; margin-top: -5px;'/>
     <span class="example-spacer"></span>
-    <button *ngIf="!userInfo.login" md-button (click)="loginWithFacebook()"><i style="font-size: 20pt;" class="fa fa-facebook-square" aria-hidden="true"></i> Login</button>
+    <button *ngIf="!userInfo.login" md-button (click)="loginWithFacebook()" style='height:50px'><i style="font-size: 20pt;" class="fa fa-facebook-square" aria-hidden="true"></i> Login</button>
     <span *ngIf="userInfo.login" md-icon-button [mdMenuTriggerFor]="menu" style='margin-top: 2px;'>
         <span class="shortName">{{userInfo.shortName}}</span>
         <img md-card-image style="border-radius: 50%; width: 45px;" src="{{userInfo.picture}}">

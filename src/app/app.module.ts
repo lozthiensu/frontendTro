@@ -5,7 +5,17 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import 'hammerjs';
-import { MdSnackBarModule, MdButtonModule, MdRadioModule, MdCheckboxModule, MdToolbarModule, MdInputModule, MdGridListModule, MdIconModule, MdMenuModule, MdDialogModule } from '@angular/material';
+import { MdSnackBarModule
+  , MdSelectModule
+  , MdButtonModule
+  , MdRadioModule
+  , MdCheckboxModule
+  , MdToolbarModule
+  , MdInputModule
+  , MdGridListModule
+  , MdIconModule
+  , MdMenuModule
+  , MdDialogModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FacebookModule } from 'ngx-facebook';
 import { CookieService } from 'angular2-cookie/services/cookies.service';
@@ -46,7 +56,6 @@ import { MapAutoCompleteComponent } from './map-auto-complete/map-auto-complete.
     , FormsModule
     , ReactiveFormsModule
     , MdRadioModule
-    , BrowserAnimationsModule
     , MdButtonModule
     , MdCheckboxModule
     , MdToolbarModule
@@ -56,6 +65,7 @@ import { MapAutoCompleteComponent } from './map-auto-complete/map-auto-complete.
     , MdIconModule
     , MdMenuModule
     , MdDialogModule
+    , MdSelectModule
     , HttpModule
     , InfiniteScrollModule
     , MomentModule
@@ -73,7 +83,7 @@ import { MapAutoCompleteComponent } from './map-auto-complete/map-auto-complete.
   ],
   providers: [CookieService, ApiService, {
     provide: LOCALE_ID,
-    useValue: 'vi-VN' // 'de-DE' for Germany, 'fr-FR' for France ...
+    useValue: 'vi-VN'
   }],
   bootstrap: [AppComponent]
 })

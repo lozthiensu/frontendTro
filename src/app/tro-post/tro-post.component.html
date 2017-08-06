@@ -19,7 +19,7 @@
 <div class="dashboard-grid large-12 columns">
   <div id="container">
     <div class="row" infinite-scroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()">
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12" *ngFor="let feed of feeds">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12" *ngFor="let feed of feeds" style='padding-right: 0px !important; padding-left: 0px !important;'>
         <app-tro-item [feed]="feed" (viewDetailClicked)="openDetail($event)" (viewMapClicked)="openMap($event)"></app-tro-item>
       </div>
     </div>

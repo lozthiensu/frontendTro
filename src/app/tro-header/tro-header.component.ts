@@ -197,7 +197,7 @@ export class TroHeaderComponent implements OnInit {
 
   viewNotification(notification) {
     console.log(notification);
-    this.api.viewNotification({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken, notificationId: notification.notificationId }).then(rs => {
+    this.api.viewNotification({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken, notificationId: notification._id }).then(rs => {
       let res: any = rs;
       if (!!res && res.status == 'OK') {
         this.api.getNotifications({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken }).then(notifications => {

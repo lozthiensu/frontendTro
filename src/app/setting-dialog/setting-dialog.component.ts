@@ -22,11 +22,13 @@ export class SettingDialogComponent implements OnInit {
   prices: any;
   typeNotifications: any;
 
-  constructor( @Inject(MD_DIALOG_DATA) public data: any
+  constructor(
+    @Inject(MD_DIALOG_DATA) public data: any
     , public dialogRef: MdDialogRef<SettingDialogComponent>
     , public api: ApiService
     , public dialog: MdDialog
-    , public snackBar: MdSnackBar) {
+    , public snackBar: MdSnackBar
+  ) {
     this.userMongo = data;
     this.prices = [
       { value: 1, viewValue: '< 1000k' },
@@ -35,15 +37,18 @@ export class SettingDialogComponent implements OnInit {
       { value: 4, viewValue: '> 5000k' }
     ];
     this.typeNotifications = [
-      { value: 0, viewValue: 'Tắt'},
-      { value: 1, viewValue: 'Tất cả'},
-      { value: 2, viewValue: 'Địa chỉ'},
-      { value: 3, viewValue: 'Giá'}
+      { value: 1, viewValue: 'Tắt' },
+      { value: 2, viewValue: 'Tất cả' },
+      { value: 3, viewValue: 'Địa chỉ' },
+      { value: 4, viewValue: 'Giá' },
+      { value: 5, viewValue: 'Địa chỉ & giá' }
     ];
   }
+
   ngOnInit() {
 
   }
+
   changeAddress() {
     console.log();
     this.dialogDetailRef = this.dialog.open(MapAutoCompleteComponent, {

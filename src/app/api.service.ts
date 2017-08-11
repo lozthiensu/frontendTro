@@ -20,6 +20,22 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  getNotifications(param: any): Promise<any> {
+    return this.http
+      .post(this.baseUrl + 'getNotifications', JSON.stringify(param), { headers: this.headers })
+      .toPromise()
+      .then(res => res.json() as any)
+      .catch(this.handleError);
+  }
+
+  viewNotification(param: any): Promise<any> {
+    return this.http
+      .post(this.baseUrl + 'viewNotification', JSON.stringify(param), { headers: this.headers })
+      .toPromise()
+      .then(res => res.json() as any)
+      .catch(this.handleError);
+  }
+
   setPrice(param: any): Promise<any> {
     return this.http
       .post(this.baseUrl + 'setPrice', JSON.stringify(param), { headers: this.headers })

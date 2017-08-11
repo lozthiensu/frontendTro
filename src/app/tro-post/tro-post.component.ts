@@ -64,6 +64,7 @@ export class TroPostComponent implements OnInit {
     this.api.getPosts(this.param)
       .then(bike => {
         this.postsFromMongo = bike;
+        console.log(this.postsFromMongo);
         var need = this.postsFromMongo.length;
         for (let i = 0; i < this.postsFromMongo.length; i++) {
           let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i]._id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
@@ -78,6 +79,7 @@ export class TroPostComponent implements OnInit {
               }
               if (this.postsFromMongo[i].phone == 'khong xac dinh')
                 this.postsFromMongo[i].phone = 'Không xác định';
+              post.location = this.postsFromMongo[i].location;
               post.address = this.postsFromMongo[i].address;
               post.price = this.postsFromMongo[i].price;
               post.phone = this.postsFromMongo[i].phone;
@@ -190,6 +192,7 @@ export class TroPostComponent implements OnInit {
               }
               if (this.postsFromMongo[i].phone == 'khong xac dinh')
                 this.postsFromMongo[i].phone = 'Không xác định';
+              post.location = this.postsFromMongo[i].location;
               post.address = this.postsFromMongo[i].address;
               post.price = this.postsFromMongo[i].price;
               post.phone = this.postsFromMongo[i].phone;
@@ -214,22 +217,30 @@ export class TroPostComponent implements OnInit {
       this.dialogDetailRef = null;
     });
   }
-  openMap(address) {
-    this.api.getGooglemapLocation(address)
-      .then(res => {
-        if (res.status == 'OK' && !!res.results[0] && !!res.results[0].geometry && !!res.results[0].geometry.location) {
-          this.dialogMapRef = this.dialog.open(TroMapComponent, {
-            data: { location: res.results[0].geometry.location, formatted_address: res.results[0].formatted_address }
-          });
-          this.dialogMapRef.afterClosed().subscribe(result => {
-            console.log('result: ' + result);
-            this.dialogMapRef = null;
-          });
-        } else {
-          alert('Có lỗi xảy ra');
-        }
-      })
-      .catch((error: any) => console.error(error));
+  openMap(post) {
+    console.log(post);
+    this.dialogMapRef = this.dialog.open(TroMapComponent, {
+      data: { location: post.location, formatted_address: post.address }
+    });
+    this.dialogMapRef.afterClosed().subscribe(result => {
+      console.log('result: ' + result);
+      this.dialogMapRef = null;
+    });
+    // this.api.getGooglemapLocation(address)
+    //   .then(res => {
+    //     if (res.status == 'OK' && !!res.results[0] && !!res.results[0].geometry && !!res.results[0].geometry.location) {
+    //       this.dialogMapRef = this.dialog.open(TroMapComponent, {
+    //         data: { location: res.results[0].geometry.location, formatted_address: res.results[0].formatted_address }
+    //       });
+    //       this.dialogMapRef.afterClosed().subscribe(result => {
+    //         console.log('result: ' + result);
+    //         this.dialogMapRef = null;
+    //       });
+    //     } else {
+    //       alert('Có lỗi xảy ra');
+    //     }
+    //   })
+    //   .catch((error: any) => console.error(error));
 
   }
 

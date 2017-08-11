@@ -4,6 +4,8 @@ import { CookieService } from 'angular2-cookie/core';
 import { SettingDialogComponent } from './../setting-dialog/setting-dialog.component';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ApiService } from './../api.service';
+import { CurrencyPipe } from '@angular/common';
+import { TroDetailComponent } from '../tro-detail/tro-detail.component';
 
 
 @Component({
@@ -15,9 +17,11 @@ export class TroHeaderComponent implements OnInit {
 
   userInfo: any;
   userMongo: any;
+  notifications: any;
   dialogSettingRef: MdDialogRef<SettingDialogComponent>;
+  dialogDetailRef: MdDialogRef<TroDetailComponent>;
   playerId: string = '';
-
+  notificationUnread: any = 0;
   constructor(
     private fb: FacebookService
     , private cookieService: CookieService
@@ -49,30 +53,45 @@ export class TroHeaderComponent implements OnInit {
           this.userMongo = user;
           console.log(user);
         });
+        this.api.getNotifications({ _id: this.userInfo.id, accessToken: this.userInfo.accessToken }).then(notifications => {
+          this.notificationUnread = 0;
+          this.notifications = notifications;
+          for (let i = 0; i < this.notifications.length; i++) {
+            if (this.notifications[i].read == 0)
+              this.notificationUnread++;
+          }
+          console.log(notifications);
+        });
 
         var OneSignal = window['OneSignal'] || [];
         console.log("Init OneSignal");
         OneSignal.push(["init", {
           appId: "f7e1a174-3a0c-43ce-96dd-720fcb5d0b97",
           autoRegister: true, /* Set to true to automatically prompt visitors */
+          allowLocalhostAsSecureOrigin: true,
           httpPermissionRequest: {
             enable: true
           },
+          // path:'/assets/',
+          subdomainName: 'tronhanh',
           notifyButton: {
             enable: true /* Set to false to hide */
           }
         }]);
         OneSignal.push(() => {
           /* These examples are all valid */
-          OneSignal.isPushNotificationsEnabled((isEnabled) => {
-            if (isEnabled)
-              console.log("Push notifications are enabled!");
-            else
-              console.log("Push notifications are not enabled yet.");
-          });
+          // OneSignal.isPushNotificationsEnabled((isEnabled) => {
+          //   if (isEnabled)
+          //     console.log("Push notifications are enabled!");
+          //   else
+          //     console.log("Push notifications are not enabled yet.");
+          // });
 
           OneSignal.isPushNotificationsEnabled().then((isEnabled) => {
             if (isEnabled) {
+              OneSignal.registerForPushNotifications()
+              OneSignal.setSubscription(true)
+
               console.log("Push notifications are enabled!");
               OneSignal.getUserId().then((userId) => {
                 console.log("User ID is", userId);
@@ -145,7 +164,15 @@ export class TroHeaderComponent implements OnInit {
               this.userMongo = user;
               console.log(user);
             });
-            // {"_id":"1212sasas131"}
+            this.api.getNotifications({ _id: res.id, accessToken: resLogin.authResponse.accessToken }).then(notifications => {
+              this.notificationUnread = 0;
+              this.notifications = notifications;
+              for (let i = 0; i < this.notifications.length; i++) {
+                if (this.notifications[i].read == 0)
+                  this.notificationUnread++;
+              }
+              console.log(notifications);
+            });
             console.log(newCookie);
             console.log(res);
           })
@@ -166,6 +193,55 @@ export class TroHeaderComponent implements OnInit {
       console.log('result: ' + result);
       this.dialogSettingRef = null;
     });
+  }
+
+  viewNotification(notification) {
+    console.log(notification);
+    this.api.viewNotification({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken, notificationId: notification.notificationId }).then(rs => {
+      let res: any = rs;
+      if (!!res && res.status == 'OK') {
+        this.api.getNotifications({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken }).then(notifications => {
+          this.notificationUnread = 0;
+          this.notifications = notifications;
+          for (let i = 0; i < this.notifications.length; i++) {
+            if (this.notifications[i].read == 0)
+              this.notificationUnread++;
+          }
+          console.log(notifications);
+        });
+      }
+      console.log(rs);
+
+      this.dialogDetailRef = this.dialog.open(TroDetailComponent, {
+        data: notification.postId
+      });
+      this.dialogDetailRef.afterClosed().subscribe(result => {
+        this.dialogDetailRef = null;
+      });
+    });
+  }
+
+  markReadAll() {
+    let count = 0;
+    for (let i = 0; i < this.notifications.length; i++) {
+      if (this.notifications[i].read == 0) {
+        this.api.viewNotification({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken, notificationId: this.notifications[i]._id }).then(rs => {
+          let res: any = rs;
+          count++;
+          if (count == this.notificationUnread) {
+            if (!!res && res.status == 'OK') {
+              this.api.getNotifications({ _id: this.userMongo._id, accessToken: this.userMongo.accessToken }).then(notifications => {
+                this.notificationUnread = 0;
+                this.notifications = notifications;
+                console.log(notifications);
+              });
+            }
+          }
+          console.log(rs);
+        });
+      }
+    }
+
   }
 
 }

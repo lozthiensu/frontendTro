@@ -38,7 +38,7 @@ export class TroItemComponent implements OnInit {
     this.viewDetailClicked.emit(this.feed.id);
   }
   viewMap(){
-    this.viewMapClicked.emit(this.feed.address);
+    this.viewMapClicked.emit(this.feed);
   }
 
 }

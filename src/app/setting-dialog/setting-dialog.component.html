@@ -1,11 +1,10 @@
 <button md-button md-dialog-close md-dialog-close color="warn" style='position: absolute; z-index: 1; background: rgba(255, 255, 255, 0.8); left: calc(50% - 44px); border-radius: 5px;'>Đóng</button>
-<md-dialog-content style='min-width: 60vw; max-width:60vw; min-height: 50vh; max-height:50vh;padding: 0px !important; margin: 24px !important; padding-top: 24px !important;'>
+<md-dialog-content class='bao-dialog-content'>
   <div class="container">
 
     <div class="row">
       <div class="col-lg-2 col-md-2 col-3" style='text-align: right;'>Địa chỉ:</div>
-      <div class="col-lg-10 col-md-10 col-9"><b style="color:#009688;">{{userMongo?.address}}</b><button md-button color="warn" style='margin-top: -5px; position: absolute; z-index: 1; background: rgba(255, 255, 255, 0.8); border-radius: 5px;'
-          (click)="changeAddress()">Thay đổi</button></div>
+      <div class="col-lg-10 col-md-10 col-9"><button md-button color="warn" style='margin-top: -5px; position: relative; z-index: 1; background: rgba(255, 255, 255, 0.8); border-radius: 5px;' (click)="changeAddress()">Thay đổi</button><b style="color:#009688;">{{userMongo?.address}}</b></div>
     </div>
 
     <div class="row">

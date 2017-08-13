@@ -6,6 +6,8 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { ApiService } from './../api.service';
 import { CurrencyPipe } from '@angular/common';
 import { TroDetailComponent } from '../tro-detail/tro-detail.component';
+import { NavServiceService } from '../nav-service.service';
+import { Angulartics2 } from 'angulartics2';
 
 
 @Component({
@@ -14,19 +16,22 @@ import { TroDetailComponent } from '../tro-detail/tro-detail.component';
   styleUrls: ['./tro-header.component.css']
 })
 export class TroHeaderComponent implements OnInit {
-
   userInfo: any;
   userMongo: any;
   notifications: any;
   dialogSettingRef: MdDialogRef<SettingDialogComponent>;
   dialogDetailRef: MdDialogRef<TroDetailComponent>;
   playerId: string = '';
+  OneSignal: any;
   notificationUnread: any = 0;
+
   constructor(
     private fb: FacebookService
     , private cookieService: CookieService
     , public api: ApiService
-    , public dialog: MdDialog) {
+    , public dialog: MdDialog
+    , private _navService: NavServiceService
+    , public angulartics2: Angulartics2) {
     let initParams: InitParams = {
       appId: '265775487151643',
       xfbml: true,
@@ -41,6 +46,7 @@ export class TroHeaderComponent implements OnInit {
       , picture: ""
       , login: false
     };
+    this.angulartics2.eventTrack.next({ action: 'Vào trang chủ', properties: { category: 'Theo dõi trang chủ', label: 'Tracking ở header' }});    
 
     console.log('Doc ra', this.getCookie("userInfo"));
     console.log('Doc ra1', this.playerId);
@@ -63,37 +69,29 @@ export class TroHeaderComponent implements OnInit {
           console.log(notifications);
         });
 
-        var OneSignal = window['OneSignal'] || [];
+        this.OneSignal = window['OneSignal'] || [];
         console.log("Init OneSignal");
-        OneSignal.push(["init", {
+        this.OneSignal.push(["init", {
           appId: "f7e1a174-3a0c-43ce-96dd-720fcb5d0b97",
           autoRegister: true, /* Set to true to automatically prompt visitors */
           allowLocalhostAsSecureOrigin: true,
-          httpPermissionRequest: {
-            enable: true
-          },
-          // path:'/assets/',
-          subdomainName: 'tronhanh',
+          // httpPermissionRequest: {
+          //   enable: true
+          // },
+          // subdomainName: 'tronhanh',
           notifyButton: {
             enable: true /* Set to false to hide */
           }
         }]);
-        OneSignal.push(() => {
+        this.OneSignal.push(() => {
           /* These examples are all valid */
-          // OneSignal.isPushNotificationsEnabled((isEnabled) => {
-          //   if (isEnabled)
-          //     console.log("Push notifications are enabled!");
-          //   else
-          //     console.log("Push notifications are not enabled yet.");
-          // });
-
-          OneSignal.isPushNotificationsEnabled().then((isEnabled) => {
+          this.OneSignal.isPushNotificationsEnabled().then((isEnabled) => {
             if (isEnabled) {
-              OneSignal.registerForPushNotifications()
-              OneSignal.setSubscription(true)
+              this.OneSignal.registerForPushNotifications()
+              this.OneSignal.setSubscription(true)
 
               console.log("Push notifications are enabled!");
-              OneSignal.getUserId().then((userId) => {
+              this.OneSignal.getUserId().then((userId) => {
                 console.log("User ID is", userId);
                 this.userInfo.playerId = userId;
                 this.api.login({ _id: this.userInfo.id, accessToken: this.userInfo.accessToken, playerId: userId }).then(user => {
@@ -105,7 +103,22 @@ export class TroHeaderComponent implements OnInit {
             else
               console.log("Push notifications are not enabled yet.");
           });
+
+          this.OneSignal.on('notificationDisplay', (event) => {
+            console.log('OneSignal notification displayed:', event);
+            this._navService.changeNav({ command: 'getNewPosts', data: event });
+            this.api.getNotifications({ _id: this.userInfo.id, accessToken: this.userInfo.accessToken }).then(notifications => {
+              this.notificationUnread = 0;
+              this.notifications = notifications;
+              for (let i = 0; i < this.notifications.length; i++) {
+                if (this.notifications[i].read == 0)
+                  this.notificationUnread++;
+              }
+              console.log(notifications);
+            });
+          });
         });
+
       }
     }
     else {
@@ -123,9 +136,11 @@ export class TroHeaderComponent implements OnInit {
   getCookie(key: string) {
     return this.cookieService.get(key);
   }
+
   setCookie(data: any) {
     return this.cookieService.putObject(data.key, data.value);
   }
+
   logOut() {
     this.setCookie({ key: "userInfo", value: "" });
     this.userInfo = {
@@ -137,6 +152,7 @@ export class TroHeaderComponent implements OnInit {
     };
     console.log(this.getCookie("userInfo"));
   }
+
   loginWithFacebook(): void {
     let options: any = {
       scope: 'public_profile,user_friends,email,pages_show_list',
@@ -211,7 +227,6 @@ export class TroHeaderComponent implements OnInit {
         });
       }
       console.log(rs);
-
       this.dialogDetailRef = this.dialog.open(TroDetailComponent, {
         data: notification.postId
       });
@@ -241,7 +256,6 @@ export class TroHeaderComponent implements OnInit {
         });
       }
     }
-
   }
 
 }

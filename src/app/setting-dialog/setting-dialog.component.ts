@@ -18,7 +18,8 @@ export class SettingDialogComponent implements OnInit {
   dialogDetailRef: MdDialogRef<MapAutoCompleteComponent>;
 
   selectedValue: string;
-
+  sexTypes: any;
+  findTypes: any;
   prices: any;
   typeNotifications: any;
 
@@ -35,6 +36,17 @@ export class SettingDialogComponent implements OnInit {
       { value: 2, viewValue: '1000k -> 2000k' },
       { value: 3, viewValue: '2000k -> 5000k' },
       { value: 4, viewValue: '> 5000k' }
+    ];
+    this.sexTypes = [
+      { value: 1, viewValue: 'Tất cả' },
+      { value: 2, viewValue: 'Nam' },
+      { value: 3, viewValue: 'Nữ' }
+    ];
+    this.findTypes = [
+      { value: 1, viewValue: 'Tất cả' },
+      { value: 2, viewValue: 'Đi tìm' },
+      { value: 3, viewValue: 'Ở ghép' },
+      { value: 3, viewValue: 'Cho thuê' }
     ];
     this.typeNotifications = [
       { value: 1, viewValue: 'Tắt' },

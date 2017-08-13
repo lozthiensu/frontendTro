@@ -1,7 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MdDialog } from '@angular/material';
 import { TroDetailComponent } from '../tro-detail/tro-detail.component';
 import { CurrencyPipe } from '@angular/common';
+import { NavServiceService } from '../nav-service.service';
 
 @Component({
   selector: 'app-tro-item',
@@ -11,15 +12,13 @@ import { CurrencyPipe } from '@angular/common';
 })
 export class TroItemComponent implements OnInit {
 
-  @Output() viewDetailClicked = new EventEmitter();
-  @Output() viewMapClicked = new EventEmitter();
-
   feed: any;
 
-  constructor() {
+  constructor(private _navService: NavServiceService) {
   }
 
   ngOnInit() {
+    this.feed.showPrice = true;
     if(!!this.feed.address == false){
       this.feed.address = 'Không rõ';
       this.feed.showMap = false;
@@ -31,14 +30,14 @@ export class TroItemComponent implements OnInit {
       this.feed.price = 0;
       this.feed.showPrice = false;
     }
-    // console.log(this.feed);
+    console.log(this.feed.price, this.feed.showPrice);
   }
 
   viewDetail(){
-    this.viewDetailClicked.emit(this.feed.id);
+    this._navService.changeNav({command: 'openDetail', data: this.feed.id});  
   }
   viewMap(){
-    this.viewMapClicked.emit(this.feed);
+    this._navService.changeNav({command: 'openMap', data: this.feed});      
   }
 
 }

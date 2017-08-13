@@ -18,14 +18,20 @@ import { MdSnackBarModule
   , MdDialogModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FacebookModule } from 'ngx-facebook';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { CookieService, CookieOptions } from 'angular2-cookie/core';
+// import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { CurrencyPipe } from '@angular/common';
+// import { Location } from '@angular/common';
 import { MomentModule } from 'angular2-moment';
 import { AgmCoreModule } from '@agm/core';
+import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
+import { RouterModule } from '@angular/router'
 
 // Service
 import { ApiService } from './api.service';
+import { NavServiceService } from './nav-service.service';
+// import { GoogleAnalyticsService } from './google-analytics.service';
 
 // Component
 import { AppComponent } from './app.component';
@@ -74,6 +80,8 @@ import { MapAutoCompleteComponent } from './map-auto-complete/map-auto-complete.
       apiKey: 'AIzaSyBH275p6ql8fFdoQxmnBS42_EZD2R-0SNg'
       , libraries: ["places"]
     })
+    , Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ])
+    , RouterModule.forRoot([])
   ],
   entryComponents: [
     TroDetailComponent
@@ -81,10 +89,16 @@ import { MapAutoCompleteComponent } from './map-auto-complete/map-auto-complete.
     , SettingDialogComponent
     , MapAutoCompleteComponent
   ],
-  providers: [CookieService, ApiService, {
-    provide: LOCALE_ID,
-    useValue: 'vi-VN'
-  }],
+  providers: [
+    CookieService
+    , ApiService
+    , NavServiceService
+    , Location
+    , {
+      provide: LOCALE_ID,
+      useValue: 'vi-VN'}
+    , { provide: CookieOptions, useValue: {}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

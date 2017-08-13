@@ -7,14 +7,20 @@ import { TroDetailComponent } from '../tro-detail/tro-detail.component';
 import { TroMapComponent } from '../tro-map/tro-map.component';
 import { ApiService } from './../api.service';
 
+import { NavServiceService } from '../nav-service.service';
+import { Subscription } from 'rxjs/Subscription';
+
 @Component({
   selector: 'app-tro-post',
   templateUrl: './tro-post.component.html',
   styleUrls: ['./tro-post.component.css']
 })
 export class TroPostComponent implements OnInit {
+
   dialogDetailRef: MdDialogRef<TroDetailComponent>;
   dialogMapRef: MdDialogRef<TroMapComponent>;
+
+  subscription: Subscription;
 
   @Input()
   feeds: any = [];
@@ -34,6 +40,7 @@ export class TroPostComponent implements OnInit {
     , private cookieService: CookieService
     , public dialog: MdDialog
     , public api: ApiService
+    , private _navService: NavServiceService
   ) {
     let initParams: InitParams = {
       appId: '265775487151643',
@@ -67,7 +74,7 @@ export class TroPostComponent implements OnInit {
         console.log(this.postsFromMongo);
         var need = this.postsFromMongo.length;
         for (let i = 0; i < this.postsFromMongo.length; i++) {
-          let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i]._id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
+          let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i].id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
           this.fb.api(urlGraph)
             .then(post => {
               post.index = i;
@@ -76,20 +83,21 @@ export class TroPostComponent implements OnInit {
               if (this.postsFromMongo[i].address == '') {
                 post.showMap = false;
                 this.postsFromMongo[i].address = 'Không xác định';
+              } else {
+                post.location = this.postsFromMongo[i].location;
+                post.address = this.postsFromMongo[i].address;
               }
               if (this.postsFromMongo[i].phone == 'khong xac dinh')
                 this.postsFromMongo[i].phone = 'Không xác định';
-              post.location = this.postsFromMongo[i].location;
-              post.address = this.postsFromMongo[i].address;
               post.price = this.postsFromMongo[i].price;
               post.phone = this.postsFromMongo[i].phone;
-              if (!!post.picture == false)
-                post.picture = 'assets/image/no-image.png';
+              if (!!post.full_picture == false)
+                post.full_picture = 'assets/image/no-image.png';
 
               temp.push(post);
               count++;
               if (count == need) {
-                temp.sort(function(a, b){return b.mtime-a.mtime});
+                temp.sort(function (a, b) { return b.mtime - a.mtime });
                 this.feeds = temp;
                 this.successGet = true;
                 this.loading = false;
@@ -98,7 +106,7 @@ export class TroPostComponent implements OnInit {
             .catch(e => {
               count++;
               if (count == need) {
-                temp.sort(function(a, b){return b.mtime-a.mtime});
+                temp.sort(function (a, b) { return b.mtime - a.mtime });
                 this.feeds = temp;
                 this.successGet = true;
                 this.loading = false;
@@ -107,12 +115,15 @@ export class TroPostComponent implements OnInit {
         }
       });
   }
+
   getCookie(key: string) {
     return this.cookieService.get(key);
   }
+
   setCookie(data: any) {
     return this.cookieService.putObject(data.key, data.value);
   }
+
   logOut() {
     this.setCookie({ key: "userInfo", value: "" });
     this.userInfo = {
@@ -126,6 +137,80 @@ export class TroPostComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.subscription = this._navService.navItem$.subscribe(data => {
+      console.log('post', data);
+      if (data.command == 'getNewPosts') {
+        console.log(data.data);
+        this.getNewPosts();
+      }
+      else if (data.command == 'openDetail') {
+        console.log(data.data);
+        this.openDetail(data.data);
+      }
+      else if (data.command == 'openMap') {
+        console.log(data.data);
+        this.openMap(data.data);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  getNewPosts() {
+    console.log('Lay bai viet moi');
+    // this.loading = true;
+    let count = 0;
+    let temp = [];
+    this.api.getNewPosts({ created_time: this.feeds[0].mtime, groupId: "492401487499641" })
+      .then(bike => {
+        this.postsFromMongo = bike;
+        console.log(this.postsFromMongo);
+        var need = this.postsFromMongo.length;
+        for (let i = 0; i < this.postsFromMongo.length; i++) {
+          let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i].id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
+          this.fb.api(urlGraph)
+            .then(post => {
+              post.mtime = this.postsFromMongo[i].created_time;
+              post.showMap = true;
+              if (this.postsFromMongo[i].address == '') {
+                post.showMap = false;
+                this.postsFromMongo[i].address = 'Không xác định';
+              } else {
+                post.location = this.postsFromMongo[i].location;
+                post.address = this.postsFromMongo[i].address;
+              }
+              if (this.postsFromMongo[i].phone == 'khong xac dinh')
+                this.postsFromMongo[i].phone = 'Không xác định';
+              post.price = this.postsFromMongo[i].price;
+              post.phone = this.postsFromMongo[i].phone;
+              if (!!post.full_picture == false)
+                post.full_picture = 'assets/image/no-image.png';
+              temp.push(post);
+              count++;
+              if (count == need) {
+                temp.sort(function (a, b) { return b.mtime - a.mtime });
+                for (let j = temp.length - 1; j >= 0; j--) {
+                  this.feeds.unshift(temp[j]);
+                }
+                this.successGet = true;
+                // this.loading = false;
+              }
+            })
+            .catch(e => {
+              count++;
+              if (count == need) {
+                temp.sort(function (a, b) { return b.mtime - a.mtime });
+                for (let j = temp.length - 1; j >= 0; j--) {
+                  this.feeds.unshift(temp[j]);
+                }
+                this.successGet = true;
+                // this.loading = false;
+              }
+            });
+        }
+      });
   }
 
   createRange(len = 20) {
@@ -170,6 +255,7 @@ export class TroPostComponent implements OnInit {
       })
       .catch((error: any) => console.error(error));
   }
+
   onScroll() {
     if (this.loading == true)
       return true;
@@ -181,7 +267,7 @@ export class TroPostComponent implements OnInit {
         this.postsFromMongo = bike;
         var need = this.postsFromMongo.length;
         for (let i = 0; i < this.postsFromMongo.length; i++) {
-          let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i]._id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
+          let urlGraph = this.fbConst.apiURL + this.postsFromMongo[i].group_id + '_' + this.postsFromMongo[i].id + '?fields=created_time,updated_time,message,id,picture,full_picture,name,link,from{id,name,picture},permalink_url&access_token=' + this.fbConst.accessToken;
           // console.log(urlGraph);
           this.fb.api(urlGraph)
             .then(post => {
@@ -189,15 +275,16 @@ export class TroPostComponent implements OnInit {
               if (this.postsFromMongo[i].address == '') {
                 post.showMap = false;
                 this.postsFromMongo[i].address = 'Không xác định';
+              } else {
+                post.location = this.postsFromMongo[i].location;
+                post.address = this.postsFromMongo[i].address;
               }
-              if (this.postsFromMongo[i].phone == 'khong xac dinh')
+              if (this.postsFromMongo[i].phone == '')
                 this.postsFromMongo[i].phone = 'Không xác định';
-              post.location = this.postsFromMongo[i].location;
-              post.address = this.postsFromMongo[i].address;
               post.price = this.postsFromMongo[i].price;
               post.phone = this.postsFromMongo[i].phone;
-              if (!!post.picture == false)
-                post.picture = 'assets/image/no-image.png';
+              if (!!post.full_picture == false)
+                post.full_picture = 'assets/image/no-image.png';
               this.feeds.push(post);
               count++;
               if (count == need) {
@@ -209,6 +296,7 @@ export class TroPostComponent implements OnInit {
         }
       });
   }
+
   openDetail(id) {
     this.dialogDetailRef = this.dialog.open(TroDetailComponent, {
       data: id
@@ -217,31 +305,20 @@ export class TroPostComponent implements OnInit {
       this.dialogDetailRef = null;
     });
   }
+
   openMap(post) {
     console.log(post);
-    this.dialogMapRef = this.dialog.open(TroMapComponent, {
-      data: { location: post.location, formatted_address: post.address }
-    });
-    this.dialogMapRef.afterClosed().subscribe(result => {
-      console.log('result: ' + result);
-      this.dialogMapRef = null;
-    });
-    // this.api.getGooglemapLocation(address)
-    //   .then(res => {
-    //     if (res.status == 'OK' && !!res.results[0] && !!res.results[0].geometry && !!res.results[0].geometry.location) {
-    //       this.dialogMapRef = this.dialog.open(TroMapComponent, {
-    //         data: { location: res.results[0].geometry.location, formatted_address: res.results[0].formatted_address }
-    //       });
-    //       this.dialogMapRef.afterClosed().subscribe(result => {
-    //         console.log('result: ' + result);
-    //         this.dialogMapRef = null;
-    //       });
-    //     } else {
-    //       alert('Có lỗi xảy ra');
-    //     }
-    //   })
-    //   .catch((error: any) => console.error(error));
-
+    if (!!post.location) {
+      this.dialogMapRef = this.dialog.open(TroMapComponent, {
+        data: { location: post.location, formatted_address: post.address }
+      });
+      this.dialogMapRef.afterClosed().subscribe(result => {
+        console.log('result: ' + result);
+        this.dialogMapRef = null;
+      });
+    }else{
+      alert('Lỗi :)');
+    }
   }
 
 }

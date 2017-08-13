@@ -10,7 +10,8 @@ export class ApiService {
   }
 
   private headers = new Headers({ 'Access-Control-Allow-Origin':'*',  'Content-Type': 'application/json' });
-  private baseUrl = 'http://localhost:8235/api/';
+  // private baseUrl = 'http://localhost:8235/api/';
+  private baseUrl = 'https://tronhanh.net/api/';
 
   login(param: any): Promise<any> {
     return this.http
